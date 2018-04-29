@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>贪吃蛇</title>
+    <style>
+        .map {
+            width: 800px;
+            height: 600px;
+            background-color: cadetblue;
+            position: relative;
+        }
+    </style>
+</head>
+<body>
+<div class="map"></div>
+<script>
+    //食物自调用函数
+    (function () {
+        var Elements = [];
+
+        //食物构造函数
+        function Food(width, height, color, x, y) {
+            this.x = x || 0;  //纵横坐标
+            this.y = y || 0;
+            this.width = width || 20; //宽度高度 预设值20px
+            this.height = height || 20;
+            this.color = color || "pink";
+
+        }
+
+        //食物原型添加初始化方法
+        Food.prototype.init = function (map) {
+            remove();
+            var div = document.createElement("div"); //食物本身是div 需要设置div属性
+            map.appendChild(div);
+            div.style.width = this.width + "px";  //预设宽度 高度
+            div.style.height = this.height + "px";
+            div.style.backgroundColor = this.color; //预设颜色
+            div.style.position = "absolute";
+            this.x = parseInt(Math.random() * (map.offsetWidth / this.width)) * this.width; //纵横坐标随机
+            this.y = parseInt(Math.random() * (map.offsetHeight / this.height)) * this.height;
+            div.style.left = this.x + "px"; //食物的随机位置
+            div.style.top = this.y + "px";
+            Elements.push(div);
+        }
+
+        // 为了动画显示，需要将先前的食物（div）删除，然后在初始化食物
+        function remove() {
+            for (var i = 0; i < Elements.length; i++) {
+                var ele = Elements[i];
+                ele.parentNode.removeChild(ele);
+                Elements.splice(i, 1);
+
+            }
+
+        }
+
+        window.Food = Food;
+    }());
+
+    // var fd = new Food();
+    //fd.init(document.getElementsByClassName('map')[0]);
+    //小蛇自调用函数
+
+    (function () {
+        var elements = []; //存放小蛇身体每个部分
+
+        //小蛇的构造函数
+        function Snake(width, height, direction) {
+            this.width = width || 20;
+            this.height = height || 20;
+            //小蛇的身体
+            this.body = [
+                {x: 3, y: 2, color: "red"},
+                {x: 2, y: 2, color: "orange"},
+                {x: 1, y: 2, color: "orange"}
+            ];
+            //this.direction = direction || "right";
+        }
+
+        //为小蛇的原型添加初始化方法
+        Snake.prototype.init = function (map) {
+            // remove();
+
+            //依据小蛇身体个数初始化小蛇
+            for (var i = 0; i < this.body.length; i++) {
+                var obj = this.body[i];
+                //创建div,并追加到map中
+                var div = document.createElement("div");
+                map.appendChild(div);
+                //设置div部分属性
+                div.style.position = 'absolute';
+                div.style.width = this.width + "px";
+                div.style.height = this.height + "px";
+
+
+                //纵横坐标 颜色
+                div.style.left = obj.x * this.width + "px";
+                div.style.top = obj.y * this.height + "px";
+                div.style.backgroundColor = obj.color;
+                elements.push(div);
+            }
+        };
+        window.Snake = Snake;
+    }());
+    //游戏自调用函数
+    /*(function () {
+        function Game(map) {
+            this.food = new Food();
+            this.snake = new Snake();
+            this.map = map;
+        }
+        //游戏初始化
+        Game.prototype.init = function () {
+            this.food.init(this.map);
+            this.snake.init(this.map);
+            this.snake.move(this.food, this.map);
+
+        }
+        window.Game = Game;
+    }());*/
+    var sn = new Snake();
+    sn.init(document.querySelector(".map"));
+</script>
+
+
+</body>
+</html>
